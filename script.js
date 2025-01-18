@@ -6,15 +6,40 @@ backgroundMusic.volume = 0.20; // Lower the volume to 20%
 
 const settingsPopup = document.getElementById('settings-popup');
 const closePopupButton = document.getElementById('close-popup');
+const wpmDisplay = document.getElementById('wpm-display');
+wpmDisplay.classList.add('wpm-glow'); // Add glow effect to WPM display
+
 let typedWord = '';
+let wordCount = 0;
+let startTime = null;
+let lastTypedTime = null;
+let currentWpm = 0;
+let targetWpm = 0;
 
 // Function to reset the background music before it ends
 function resetBackgroundMusicNearEnd() {
-    if (backgroundMusic.currentTime >= backgroundMusic.duration - 34) {
+    if (backgroundMusic.currentTime >= backgroundMusic.duration - 20) {
         backgroundMusic.currentTime = 0; // Reset to the beginning for the next loop
         backgroundMusic.play();
     }
 }
+
+// Function to smoothly update the WPM display
+function updateWpmDisplay() {
+    const updateInterval = setInterval(() => {
+        if (currentWpm < targetWpm) {
+            currentWpm += 1;
+            if (currentWpm > targetWpm) currentWpm = targetWpm;
+        } else if (currentWpm > targetWpm) {
+            currentWpm -= 1;
+            if (currentWpm < targetWpm) currentWpm = targetWpm;
+        } else {
+            clearInterval(updateInterval);
+        }
+        wpmDisplay.textContent = `${Math.round(currentWpm)} WPM`;
+    }, 100); // Update every 100 milliseconds
+}
+
 // Start playing the background music once first character is typed
 document.addEventListener('keydown', () => {
     backgroundMusic.play();
@@ -34,10 +59,22 @@ document.addEventListener('keydown', (event) => {
         if (typedWord.endsWith('settings')) {
             settingsPopup.style.display = 'block';
         }
+
+        if (event.key === ' ') {
+            wordCount++;
+            if (!startTime) {
+                startTime = new Date().getTime();
+            }
+            lastTypedTime = new Date().getTime();
+            const elapsedTime = (lastTypedTime - startTime) / 60000; // Time in minutes
+            targetWpm = Math.round(wordCount / elapsedTime);
+            updateWpmDisplay();
+        }
     } else if (event.key === 'Backspace') {
         if (display.lastChild) {
             display.removeChild(display.lastChild);
         }
+        typedWord = typedWord.slice(0, -1);
     } else if (event.key === 'Enter') {
         const words = display.textContent.split(' ');
         const lastWord = words[words.length - 1];
@@ -54,6 +91,18 @@ document.addEventListener('keydown', (event) => {
 closePopupButton.addEventListener('click', () => {
     settingsPopup.style.display = 'none';
 });
+
+// Update WPM display every second
+setInterval(() => {
+    if (startTime) {
+        const currentTime = new Date().getTime();
+        const elapsedTimeSinceLastType = (currentTime - lastTypedTime) / 1000; // Time in seconds
+        if (elapsedTimeSinceLastType > 1) {
+            targetWpm = 0;
+            updateWpmDisplay();
+        }
+    }
+}, 1000);
 
 function fadeOutCharacter(span, isRedWord = false) {
     const fadeOutTime = isRedWord ? 2000 : 1000; // Double the time for red words

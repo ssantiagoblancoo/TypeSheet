@@ -63,3 +63,11 @@ body {
 .popup button:hover {
     background-color: red;
 }
+
+#wpm-display {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: #fff;
+}
