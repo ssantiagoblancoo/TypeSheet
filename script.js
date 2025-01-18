@@ -21,6 +21,7 @@ document.addEventListener('keydown', (event) => {
     if (event.key.length === 1) { // Only process printable characters
         const span = document.createElement('span'); // Gives every character its own span to allow character animations
         span.textContent = event.key;
+        span.classList.add('glow'); // Add glow effect
         display.appendChild(span);
         clickSound.play(); // Play the clicking sound
         fadeOutCharacter(span); // Each character fades out individually
@@ -35,6 +36,7 @@ document.addEventListener('keydown', (event) => {
         let wordStartIndex = spans.length - lastWord.length;
         for (let i = wordStartIndex; i < spans.length; i++) {
             spans[i].style.color = 'red';
+            spans[i].classList.add('red-glow'); // Add red glow effect
             fadeOutCharacter(spans[i], true);
         }
     }

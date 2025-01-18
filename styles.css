@@ -16,5 +16,13 @@ body {
 
 .fade-out {
     opacity: 0;
-    transition: opacity 2s ease-out;
+    transition: opacity 1s ease-out;
+}
+
+.glow {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff;
+}
+
+.red-glow {
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
 }
