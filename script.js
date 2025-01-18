@@ -10,6 +10,15 @@ document.addEventListener('keydown', (event) => {
         if (display.lastChild) {
             display.removeChild(display.lastChild);
         }
+    } else if (event.key === 'Enter') {
+        const words = display.textContent.split(' ');
+        const lastWord = words[words.length - 1];
+        const spans = display.querySelectorAll('span');
+        let wordStartIndex = spans.length - lastWord.length;
+        for (let i = wordStartIndex; i < spans.length; i++) {
+            spans[i].style.color = 'red';
+            fadeOutCharacter(spans[i], true);
+        }
     }
 });
 
@@ -19,5 +28,5 @@ function fadeOutCharacter(span) {
         setTimeout(() => {
             span.remove();
         }, 2000); // Remove span after fade-out animation (2 seconds)
-    }, 1000 + display.children.length * 100); // Delay based on position
+    }, 4000 + display.children.length * 100); // Delay based on position
 }
