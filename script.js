@@ -4,6 +4,10 @@ const backgroundMusic = new Audio('./sfx/ethereal.wav');
 backgroundMusic.loop = true; // Loop the background music
 backgroundMusic.volume = 0.20; // Lower the volume to 20%
 
+const settingsPopup = document.getElementById('settings-popup');
+const closePopupButton = document.getElementById('close-popup');
+let typedWord = '';
+
 // Function to reset the background music before it ends
 function resetBackgroundMusicNearEnd() {
     if (backgroundMusic.currentTime >= backgroundMusic.duration - 34) {
@@ -25,6 +29,11 @@ document.addEventListener('keydown', (event) => {
         display.appendChild(span);
         clickSound.play(); // Play the clicking sound
         fadeOutCharacter(span); // Each character fades out individually
+
+        typedWord += event.key;
+        if (typedWord.endsWith('settings')) {
+            settingsPopup.style.display = 'block';
+        }
     } else if (event.key === 'Backspace') {
         if (display.lastChild) {
             display.removeChild(display.lastChild);
@@ -40,6 +49,10 @@ document.addEventListener('keydown', (event) => {
             fadeOutCharacter(spans[i], true);
         }
     }
+});
+
+closePopupButton.addEventListener('click', () => {
+    settingsPopup.style.display = 'none';
 });
 
 function fadeOutCharacter(span, isRedWord = false) {
